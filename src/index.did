@@ -1,0 +1,38 @@
+type Resolution = record {
+  id : text;
+  updated_at : opt nat64;
+  name : text;
+  tags : vec text;
+  completed : bool;
+  description : text;
+  deadline : text;
+  created_at : nat64;
+  progress : nat64;
+  category : text;
+  priority : text;
+};
+type ResolutionPayload = record {
+  name : text;
+  completed : bool;
+  description : text;
+  deadline : text;
+  progress : nat64;
+  category : text;
+  priority : text;
+};
+type _AzleResult = variant { Ok : Resolution; Err : text };
+type _AzleResult_1 = variant { Ok : vec Resolution; Err : text };
+service : () -> {
+  createResolution : (ResolutionPayload) -> (_AzleResult);
+  deleteResolution : (text) -> (_AzleResult);
+  deleteTags : (text, vec text) -> (_AzleResult);
+  getAllResolutions : () -> (_AzleResult_1) query;
+  getResolution : (text) -> (_AzleResult) query;
+  getResolutionsByCategory : (text) -> (_AzleResult_1) query;
+  insertTags : (text, vec text) -> (_AzleResult);
+  searchResolutions : (text) -> (_AzleResult_1) query;
+  updateCompleted : (text, bool) -> (_AzleResult);
+  updatePriority : (text, text) -> (_AzleResult);
+  updateProgress : (text, nat64) -> (_AzleResult);
+  updateResolution : (text, ResolutionPayload) -> (_AzleResult);
+}

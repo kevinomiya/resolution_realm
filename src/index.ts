@@ -8,7 +8,7 @@ type Resolution = Record<{
     deadline: string;
     completed: boolean;
     category: string;
-    progress: number;
+    progress: nat64;
     tags: Vec<string>;
     priority: string; //low, medium, high
     created_at: nat64;
@@ -18,15 +18,15 @@ type Resolution = Record<{
 const resolutionStr = new StableBTreeMap<string, Resolution>(0, 44, 512);
 
 // resolution payload
-type ResolutionPayload = {
+type ResolutionPayload = Record<{
     name: string;
     description: string;
     deadline: string;
     completed: boolean;
     category: string;
-    progress: number;
+    progress: nat64;
     priority: string; //low, medium, high
-};
+}>;
 
 // CRUD operations for resolution
 $update
@@ -134,7 +134,7 @@ export function getResolutionsByCategory(category: string): Result<Vec<Resolutio
 
 // update progress of a Resolution
 $update
-export function updateProgress(id: string, progress: number): Result<Resolution, string> {
+export function updateProgress(id: string, progress: nat64): Result<Resolution, string> {
     return match(resolutionStr.get(id), {
         Some: (resolution) => {
             const updatedResolution: Resolution = { ...resolution, progress: progress };
