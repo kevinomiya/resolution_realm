@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "resolution_realm": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "ts": "src/index.ts",
+            "root": "src",
+            "candid": "src/index.did",
+            "build": "npx azle resolution_realm",
+            "wasm": ".azle/resolution_realm/resolution_realm.wasm",
+            "gzip": true
+        }
+    }
+}
+
