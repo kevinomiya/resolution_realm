@@ -7,6 +7,8 @@ enum PriorityLevel {
     High = "high"
 }
 
+type UpdateField = 'name' | 'description' | 'deadline' | 'completed' | 'category' | 'progress' | 'priority' | 'tags';
+
 type Resolution = Record<{
     id: string;
     name: string;
@@ -61,10 +63,10 @@ export function createResolution(payload: ResolutionPayload): Result<Resolution,
 
 // update a Resolution 
 $update
-export function updateResolution(id: string, payload: ResolutionPayload): Result<Resolution, string> {
+export function updateField(id: string, field: UpdateField, value: any): Result<Resolution, string> {
     return match(resolutionStr.get(id), {
         Some: (resolution) => {
-            const updatedResolution: Resolution = { ...resolution, ...payload, updated_at: Opt.Some(ic.time()) };
+            const updatedResolution: Resolution = { ...resolution, [field]: value };
             resolutionStr.insert(resolution.id, updatedResolution);
             return Result.Ok<Resolution, string>(updatedResolution);
         },
@@ -136,46 +138,6 @@ export function getResolutionsByCategory(category: string): Result<Vec<Resolutio
     const resolutions = resolutionStr.values();
     const filteredResolutions = resolutions.filter((resolution) => resolution.category === category);
     return Result.Ok<Vec<Resolution>, string>(filteredResolutions);
-}
-
-// update progress of a Resolution
-$update
-export function updateProgress(id: string, progress: nat64): Result<Resolution, string> {
-    return match(resolutionStr.get(id), {
-        Some: (resolution) => {
-            const updatedResolution: Resolution = { ...resolution, progress: progress };
-            resolutionStr.insert(resolution.id, updatedResolution);
-            return Result.Ok<Resolution, string>(updatedResolution);
-        },
-        None: () => Result.Err<Resolution, string>(`Resolution with id:${id} not found`),
-    });
-}
-
-// update priority of a Resolution
-$update
-export function updatePriority(id: string, priority: PriorityLevel): Result<Resolution, string> {
-    return match(resolutionStr.get(id), {
-        Some: (resolution) => {
-            const updatedResolution: Resolution = { ...resolution, priority: priority };
-            resolutionStr.insert(resolution.id, updatedResolution);
-            return Result.Ok<Resolution, string>(updatedResolution);
-        },
-        None: () => Result.Err<Resolution, string>(`Resolution with id:${id} not found`),
-    });
-}
-
-
-// update completed of a Resolution
-$update
-export function updateCompleted(id: string, completed: boolean): Result<Resolution, string> {
-    return match(resolutionStr.get(id), {
-        Some: (resolution) => {
-            const updatedResolution: Resolution = { ...resolution, completed: completed };
-            resolutionStr.insert(resolution.id, updatedResolution);
-            return Result.Ok<Resolution, string>(updatedResolution);
-        },
-        None: () => Result.Err<Resolution, string>(`Resolution with id:${id} not found`),
-    });
 }
 
 // search for Resolutions by name or description or tags
